@@ -23,5 +23,9 @@
   "homepage": "https://github.com/Sarthak30/PhotoApp",
   "dependencies": {
     "mime": "^1.3.4"
-  }
+  },
+  "window": {
+    "toolbar": false,
+    "icon": "icon.png"
+  } 
 }
