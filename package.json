@@ -1,0 +1,24 @@
+{
+  "name": "photoapp",
+  "version": "1.0.0",
+  "description": "A gallery like app for Desktop",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sarthak30/PhotoApp.git"
+  },
+  "keywords": [
+    "desktop",
+    "cross-paltform",
+    "galley"
+  ],
+  "author": "Sarthak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sarthak30/PhotoApp/issues"
+  },
+  "homepage": "https://github.com/Sarthak30/PhotoApp"
+}
