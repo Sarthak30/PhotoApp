@@ -1,21 +1,81 @@
 'use strict';
 
-function openFolderDialog(){
+var fs = require('fs');
+var mime = require('mime');
+var path = require('path');
+
+function openFolderDialog(cb){
     var inputField = document.querySelector('#folderselector');
     inputField.addEventListener('change', function(){
         var folderPath = this.value;
-        alert('Folder path is '+folderPath);
+        cb(folderPath);
     }, false);
     inputField.click();
 }
 
-function bindSelectFolderClick(){
+function bindSelectFolderClick(cb){
     var button = document.querySelector('#select_folder');
     button.addEventListener('click', function(){
-        openFolderDialog();
+        openFolderDialog(cb);
     });
 }
 
-window.onload = function(){
-    bindSelectFolderClick();
+function hideSelectFolderButton(){
+    var button = document.querySelector('#select_folder');
+    button.style.display = 'none';
 }
+
+function findAllFiles(folderPath, cb){
+    fs.readdir(folderPath, function(err, files){
+        if(err) { return cb(err, null);}
+        cb(null, files);
+    });
+}
+
+var imageMimeTypes = [
+    'image/bmp',
+    'image/gif',
+    'image/jpeg',
+    'image/png',
+    'image/pjpeg',
+    'image/tiff',
+    'image/webp',
+    'image/x-tiff',
+    'image/x-windows-bmp'
+];
+
+function findImageFiles (files, folderPath, cb) {
+    var imageFiles = [];
+    files.forEach(function (file) {
+        var fullFilePath = path.resolve(folderPath,file);
+        var extension = mime.lookup(fullFilePath);
+        if (imageMimeTypes.indexOf(extension) !== -1) {
+            imageFiles.push({name: file, path: fullFilePath});
+        }
+        if (files.indexOf(file) === files.length-1) {
+            cb(imageFiles);
+        }
+    });
+}
+
+function addImageToPhotosArea (file) {
+    var photosArea = document.getElementById('photos');
+        var template = document.querySelector('#photo-template');
+        template.content.querySelector('img').src = file.path;
+        template.content.querySelector('img').setAttribute('data-name',file.name);
+    var clone = window.document.importNode(template.content, true);
+      photosArea.appendChild(clone);
+}
+
+window.onload = function () {
+    bindSelectFolderClick(function (folderPath) {
+        hideSelectFolderButton();
+        findAllFiles(folderPath, function (err, files) {
+            if (!err) {
+                findImageFiles(files, folderPath, function (imageFiles) {
+                        imageFiles.forEach(addImageToPhotosArea);
+                });
+            }
+        });
+    });
+};
